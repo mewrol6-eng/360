@@ -186,10 +186,187 @@
         .fading {
             opacity: 1 !important;
         }
+
+        #onboarding-modal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        #onboarding-modal.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .onboarding-content {
+            background: rgba(40, 40, 40, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            border-radius: 24px;
+            color: white;
+            max-width: 400px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            transform: translateY(0);
+            transition: transform 0.5s ease;
+        }
+
+        #onboarding-modal.hidden .onboarding-content {
+            transform: translateY(20px);
+        }
+
+        .onboarding-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .onboarding-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+            gap: 16px;
+        }
+
+        .onboarding-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .onboarding-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: white;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .onboarding-text {
+            font-size: 15px;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .onboarding-text strong {
+            font-size: 16px;
+            color: white;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .onboarding-btn {
+            margin-top: 10px;
+            background: white;
+            color: black;
+            border: none;
+            padding: 14px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+            width: 100%;
+        }
+
+        .onboarding-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.2);
+        }
+
+        @media (max-width: 600px) {
+            .onboarding-content {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+
+            .onboarding-title {
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+
+            .onboarding-step {
+                gap: 12px;
+                margin-bottom: 20px;
+            }
+
+            .onboarding-icon {
+                width: 40px;
+                height: 40px;
+            }
+
+            .onboarding-icon svg {
+                width: 20px;
+                height: 20px;
+            }
+
+            .onboarding-text {
+                font-size: 14px;
+            }
+
+            .onboarding-text strong {
+                font-size: 15px;
+            }
+        }
     </style>
 </head>
 
 <body>
+
+    <div id="onboarding-modal" class="glass">
+        <div class="onboarding-content">
+            <div class="onboarding-title">Добро пожаловать в Sehriyo!</div>
+
+            <div class="onboarding-step">
+                <div class="onboarding-icon">
+                    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 9l-3 3 3 3" />
+                        <path d="M9 5l3-3 3 3" />
+                        <path d="M19 9l3 3-3 3" />
+                        <path d="M9 19l3 3 3-3" />
+                        <path d="M2 12h20" />
+                        <path d="M12 2v20" />
+                    </svg>
+                </div>
+                <div class="onboarding-text">
+                    <strong>Вращение камеры</strong>
+                    Тяните мышкой или пальцем по экрану, чтобы оглядываться вокруг.
+                </div>
+            </div>
+
+            <div class="onboarding-step">
+                <div class="onboarding-icon">
+                    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 18l6-6-6-6" />
+                    </svg>
+                </div>
+                <div class="onboarding-text">
+                    <strong>Смена локаций</strong>
+                    Используйте стрелки внизу экрана для перемещения между локациями.
+                </div>
+            </div>
+
+            <button class="onboarding-btn" id="start-btn">Начать экскурсию</button>
+        </div>
+    </div>
 
     <div id="fade-overlay" class="fading"></div>
 
@@ -217,10 +394,18 @@
 
     <script>
         const photos = [
-            { url: "photo.jpg", title: "Двор школы" },
-            { url: "photo2.jpg", title: "Ресепшн" },
-            { url: "photo3.jpg", title: "Кабинет Английского языка" },
-            { url: "photo4.jpg", title: "Кабинет Физики" },
+            { url: "photo.jpg", title: "Двор школы", minPitch: -65 },
+            { url: "photo2.jpg", title: "Ресепшн", minPitch: -65 },
+            { url: "photo3.jpg", title: "Кабинет Английского языка", minPitch: -65 },
+            { url: "photo4.jpg", title: "Кабинет Физики", minPitch: -35 },
+            { url: "photo7.jpg", title: "Кабинет Английского языка", minPitch: -35 },
+            { url: "photo8.jpg", title: "Кабинет Музыки", minPitch: -35 },
+            { url: "photo10.jpg", title: "Кабинет Русского языка", minPitch: -35 },
+            { url: "photo11.jpg", title: "Кабинет Звукозаписи", minPitch: -35 },
+            { url: "photo14.jpg", title: "Музей Sehriyo", minPitch: -35 },
+            { url: "photo6.jpg", title: "Конференц зал", minPitch: -45, minYaw: -25, maxYaw: 230 },
+            { url: "photo12.jpg", title: "Кабинет Рисования", minPitch: -45, minYaw: 120, maxYaw: 360 },
+            { url: "photo9.jpg", title: "Санузел", minPitch: -35 },
         ];
 
         let currentIndex = 0;
@@ -229,11 +414,16 @@
         function generateScenes() {
             let scenes = {};
             photos.forEach((photo, index) => {
-                scenes["scene_" + index] = {
+                let sceneConfig = {
                     "type": "equirectangular",
                     "panorama": photo.url,
-                    "minPitch": -65
+                    "minPitch": photo.minPitch !== undefined ? photo.minPitch : -65
                 };
+
+                if (photo.minYaw !== undefined) sceneConfig.minYaw = photo.minYaw;
+                if (photo.maxYaw !== undefined) sceneConfig.maxYaw = photo.maxYaw;
+
+                scenes["scene_" + index] = sceneConfig;
             });
             return scenes;
         }
@@ -251,12 +441,12 @@
                         "loadButtonLabel": "Нажмите, чтобы<br>погрузиться",
                         "loadingLabel": "Загрузка...",
                         "bylineLabel": "от %s",
-                        "noPanoramaError": "Не найдена панорама.",
-                        "fileAccessError": "Файл не может быть открыт.",
-                        "malformedURLError": "Неверный URL.",
-                        "iOS8WebGLError": "В связи с ограничениями iOS 8 WebGL не поддерживается.",
-                        "genericWebGLError": "Ваш браузер не поддерживает WebGL.",
-                        "textureSizeError": "Данная панорама слишком велика для вашего устройства.",
+                        "noPanoramaError": "Неизвестная ошибка.",
+                        "fileAccessError": "Неизвестная ошибка.",
+                        "malformedURLError": "Неизвестная ошибка.",
+                        "iOS8WebGLError": "Ваш браузер не поддерживает панорамы.",
+                        "genericWebGLError": "Ваш браузер не поддерживает панорамы.",
+                        "textureSizeError": "Проверьте интернет соединение.",
                         "unknownError": "Неизвестная ошибка."
                     }
                 },
@@ -309,6 +499,10 @@
         document.getElementById('arrow-right').addEventListener('click', () => {
             currentIndex = (currentIndex + 1) % photos.length;
             switchScene(currentIndex);
+        });
+
+        document.getElementById('start-btn').addEventListener('click', () => {
+            document.getElementById('onboarding-modal').classList.add('hidden');
         });
     </script>
 </body>
