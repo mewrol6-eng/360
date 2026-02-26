@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Онлайн экскурсия</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        #panorama {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .glass {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .instructions {
+            position: absolute;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 24px;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 10;
+            pointer-events: none;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            animation: fadeOut 2s forwards 6s;
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        .photo-title {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 32px;
+            font-size: 20px;
+            font-weight: 600;
+            border-radius: 100px;
+            z-index: 10;
+            pointer-events: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            transition: all 0.5s ease;
+        }
+
+        .nav-arrows-container {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 10;
+        }
+
+        .nav-arrow {
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 50%;
+            user-select: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .nav-arrow svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            margin-left: -2px;
+
+        }
+
+        #arrow-right svg {
+            margin-left: 2px;
+
+        }
+
+        .nav-arrow:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .nav-arrow:active {
+            transform: translateY(0) scale(0.95);
+        }
+
+        .mobile-text {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .photo-title {
+                font-size: 16px;
+                padding: 10px 24px;
+                top: 70px;
+                width: auto;
+            }
+
+            .instructions {
+                font-size: 13px;
+                padding: 8px 20px;
+                top: 20px;
+            }
+
+            .desktop-text {
+                display: none;
+            }
+
+            .mobile-text {
+                display: inline;
+            }
+
+            .nav-arrows-container {
+                bottom: 30px;
+                gap: 24px;
+            }
+
+            .nav-arrow {
+                width: 50px;
+                height: 50px;
+            }
+
+            .nav-arrow svg {
+                width: 22px;
+                height: 22px;
+            }
+        }
+
+        #fade-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            z-index: 5;
+
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .fading {
+            opacity: 1 !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="fade-overlay" class="fading"></div>
+
+    <div class="instructions glass">
+        <span class="desktop-text">Тяните мышкой или пальцем, чтобы осматриваться</span>
+        <span class="mobile-text">Тяните пальцем, чтобы осматриваться</span>
+    </div>
+
+    <div class="photo-title glass" id="photo-title">Загрузка...</div>
+
+    <div class="nav-arrows-container">
+        <div class="nav-arrow glass" id="arrow-left">
+            <svg viewBox="0 0 24 24">
+                <path d="M15 18l-6-6 6-6" />
+            </svg>
+        </div>
+        <div class="nav-arrow glass" id="arrow-right">
+            <svg viewBox="0 0 24 24">
+                <path d="M9 18l6-6-6-6" />
+            </svg>
+        </div>
+    </div>
+
+    <div id="panorama"></div>
+
+    <script>
+        const photos = [
+            { url: "photo.jpg", title: "Двор школы" },
+            { url: "photo2.jpg", title: "Ресепшн" },
+            { url: "photo3.jpg", title: "IT-HUB" },
+            { url: "photo4.jpg", title: "Физика" },
+        ];
+
+        let currentIndex = 0;
+        let viewer;
+
+        function generateScenes() {
+            let scenes = {};
+            photos.forEach((photo, index) => {
+                scenes["scene_" + index] = {
+                    "type": "equirectangular",
+                    "panorama": photo.url,
+                    "minPitch": -65
+                };
+            });
+            return scenes;
+        }
+
+        function initViewer() {
+            viewer = pannellum.viewer('panorama', {
+                "default": {
+                    "firstScene": "scene_0",
+                    "autoLoad": true,
+                    "autoRotate": -2,
+                    "showControls": false,
+                    "compass": false,
+                    "sceneFadeDuration": 1000,
+                    "strings": {
+                        "loadButtonLabel": "Нажмите, чтобы<br>погрузиться",
+                        "loadingLabel": "Загрузка...",
+                        "bylineLabel": "от %s",
+                        "noPanoramaError": "Не найдена панорама.",
+                        "fileAccessError": "Файл не может быть открыт.",
+                        "malformedURLError": "Неверный URL.",
+                        "iOS8WebGLError": "В связи с ограничениями iOS 8 WebGL не поддерживается.",
+                        "genericWebGLError": "Ваш браузер не поддерживает WebGL.",
+                        "textureSizeError": "Данная панорама слишком велика для вашего устройства.",
+                        "unknownError": "Неизвестная ошибка."
+                    }
+                },
+                "scenes": generateScenes()
+            });
+
+            document.getElementById('photo-title').textContent = photos[0].title;
+
+            setTimeout(() => {
+                document.getElementById('fade-overlay').classList.remove('fading');
+            }, 1000);
+        }
+
+        initViewer();
+
+        let isTransitioning = false;
+
+        function switchScene(index) {
+            if (isTransitioning) return;
+            isTransitioning = true;
+
+            const overlay = document.getElementById('fade-overlay');
+
+            overlay.classList.add('fading');
+
+            setTimeout(() => {
+                const titleEl = document.getElementById('photo-title');
+                titleEl.style.opacity = '0';
+
+                viewer.loadScene("scene_" + index, 'same', 'same', 'same');
+
+                setTimeout(() => {
+                    titleEl.textContent = photos[index].title;
+                    titleEl.style.opacity = '1';
+
+                    overlay.classList.remove('fading');
+
+                    setTimeout(() => {
+                        isTransitioning = false;
+                    }, 500);
+                }, 100);
+            }, 500);
+        }
+
+        document.getElementById('arrow-left').addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + photos.length) % photos.length;
+            switchScene(currentIndex);
+        });
+
+        document.getElementById('arrow-right').addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % photos.length;
+            switchScene(currentIndex);
+        });
+    </script>
+</body>
+
+</html>
