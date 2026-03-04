@@ -326,6 +326,44 @@
                 font-size: 15px;
             }
         }
+
+        /* Styling for Pannellum loading indicator */
+        .pnlm-load-box {
+            background-color: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            color: transparent !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        .pnlm-lbox {
+            width: 40px !important;
+            height: 40px !important;
+            border: 3px solid rgba(255, 255, 255, 0.2) !important;
+            border-top: 3px solid #ffffff !important;
+            border-radius: 50% !important;
+            animation: spin 1s linear infinite !important;
+            background: transparent !important;
+            margin: auto !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        .pnlm-lbar,
+        .pnlm-lmsg {
+            display: none !important;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 
@@ -396,16 +434,18 @@
         const photos = [
             { url: "photo.jpg", title: "Двор школы", minPitch: -65 },
             { url: "photo2.jpg", title: "Ресепшн", minPitch: -65 },
-            { url: "photo3.jpg", title: "Кабинет Английского языка", minPitch: -65 },
+            { url: "photo3.jpg", title: "Кабинет Английского языка", minPitch: -35 },
+            { url: "photo4.jpg", title: "Кабинет Физики", minPitch: -35 },
             { url: "photo7.jpg", title: "Кабинет Английского языка", minPitch: -35 },
-            { url: "photo8.jpg", title: "Кабинет Музыки", minPitch: -35 },
+            { url: "photo8.jpg", title: "Кабинет Музыки", minPitch: -45 },
             { url: "photo10.jpg", title: "Кабинет Русского языка", minPitch: -35 },
             { url: "photo11.jpg", title: "Кабинет Звукозаписи", minPitch: -35 },
             { url: "photo14.jpg", title: "Музей Sehriyo", minPitch: -35 },
             { url: "photo6.jpg", title: "Конференц зал", minPitch: -45, minYaw: -25, maxYaw: 230 },
             { url: "photo12.jpg", title: "Кабинет Рисования", minPitch: -45, minYaw: 120, maxYaw: 360 },
-            { url: "photo4.jpg", title: "Кабинет Физики", minPitch: -35 },
-            { url: "photo9.jpg", title: "Санузел", minPitch: -35 },
+            { url: "photo9.jpg", title: "Санузел", minPitch: -55 },
+            { url: "photo15.jpg", title: "Санузел", minPitch: -55 },
+            { url: "photo16.jpg", title: "Кабинет Английского языка", minPitch: -45 },
         ];
 
         let currentIndex = 0;
@@ -436,6 +476,7 @@
                     "autoRotate": -2,
                     "showControls": false,
                     "compass": false,
+                    "hfov": window.innerWidth <= 600 ? 70 : 100,
                     "sceneFadeDuration": 1000,
                     "strings": {
                         "loadButtonLabel": "Нажмите, чтобы<br>погрузиться",
